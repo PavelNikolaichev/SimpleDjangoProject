@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>История выражений</title>
+    <style>
+        main > .container {
+            padding: 60px 15px 0;
+        }
+    </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body class="d-flex flex-column h-100">
+    {% include "menu.html" %}
+    <main class="flex-shrink-0">
+        <div class="container">
+            <div class="row">
+              <div class="col mb-2">
+                  <h1 class="mt-5">История выражений</h1>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-2">
+                    <table class="table table-striped">
+                        <tr>
+                            <td>ID</td>
+                            <td>Выражение</td>
+                        </tr>
+                        {% for record in history %}
+                            <tr>
+                                <td>{{ record.id }}</td>
+                                <td>{{ record.expression }}</td>
+                            </tr>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
