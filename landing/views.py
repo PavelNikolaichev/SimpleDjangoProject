@@ -220,7 +220,7 @@ def Clicker(request):
         form = StudentForm(request.POST)
         if form.is_valid():
             record = Student(
-                HP=(form.data['HP']),
+                HP=form.data['HP'] ,
                 IQ=form.data['IQ'],
                 FUN=form.data['FUN']
             )

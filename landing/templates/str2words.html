@@ -1,70 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Анализ текста</title>
-    <style>
-        main > .container {
-            padding: 60px 15px 0;
-        }
-    </style>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-</head>
-<body class="d-flex flex-column h-100">
-{% include 'menu.html' %}
-<main class="flex-shrink-0">
-    <div class="container">
-        <div class="row">
-            <div class="col mb-2">
-                <h1 class="mt-5">Анализ текста</h1>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col mb-2">
-                {% if request.user.is_authenticated %}
-                    <h3>Введите данные:</h3>
-                    <form method="post" action="/str2words/">
-                        {% csrf_token %}
-                        {{ form.Text.label }}: {{ form.Text }}<br>
-                        <input type="submit" class="btn btn-primary mt-2" value="Анализ">
-                    </form>
-                    {% if error %}
-                        <p>Произошла ошибка</p>
-                        <p>Подробности:</p>
-                        {{ form.errors }}
-                    {% endif %}
-                    {% if has_data %}
-                        <ul>
-                            <li>Предложение = {{ string }}</li>
-                            <li>Кол-во слов = {{ words }}</li>
-                            <li>Кол-во чисел: {{ numbers }}</li>
-                            <li>
-                                Слова:<br>
-                                <ol>
-                                    {% for word in unique_words %}
-                                        <li> {{ word }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </li>
-                            <li>
-                                Числа:<br>
-                                <ol>
-                                    {% for num in unique_nums %}
-                                        <li> {{ num }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </li>
-                        </ul>
-                    {% endif %}
-                {% else %}
-                    <p>Войдите для продолжения</p>
-                {% endif %}
-            </div>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col mb-2">
+            <h1 class="mt-5">Анализ текста</h1>
         </div>
     </div>
-</main>
-</body>
-</html>
+
+    <div class="row">
+        <div class="col mb-2">
+            {% if request.user.is_authenticated %}
+                <h3>Введите данные:</h3>
+                <form method="post" action="/str2words/">
+                    {% csrf_token %}
+                    {{ form.Text.label }}: {{ form.Text }}<br>
+                    <input type="submit" class="btn btn-primary mt-2" value="Анализ">
+                </form>
+                {% if error %}
+                    <p>Произошла ошибка</p>
+                    <p>Подробности:</p>
+                    {{ form.errors }}
+                {% endif %}
+                {% if has_data %}
+                    <ul>
+                        <li>Предложение = {{ string }}</li>
+                        <li>Кол-во слов = {{ words }}</li>
+                        <li>Кол-во чисел: {{ numbers }}</li>
+                        <li>
+                            Слова:<br>
+                            <ol>
+                                {% for word in unique_words %}
+                                    <li> {{ word }}</li>
+                                {% endfor %}
+                            </ol>
+                        </li>
+                        <li>
+                            Числа:<br>
+                            <ol>
+                                {% for num in unique_nums %}
+                                    <li> {{ num }}</li>
+                                {% endfor %}
+                            </ol>
+                        </li>
+                    </ul>
+                {% endif %}
+            {% else %}
+                <p>Войдите для продолжения</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

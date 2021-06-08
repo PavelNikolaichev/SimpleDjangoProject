@@ -1,43 +1,25 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Сложное уравнение</title>
-    <style>
-        main > .container {
-            padding: 60px 15px 0;
-        }
-    </style>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+      <div class="col mb-2">
+          <h1 class="mt-5">Сложное уравнение</h1>
+      </div>
+    </div>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-</head>
-<body class="d-flex flex-column h-100">
-    {% include 'menu.html' %}
-    <main class="flex-shrink-0">
-      <div class="container">
-          <div class="row">
-              <div class="col mb-2">
-                  <h1 class="mt-5">Сложное уравнение</h1>
-              </div>
-          </div>
-
-          <div class="row">
-              <div class="col mb-2">
-                  <div class="card">
-                      <div class="card-body">
-                          <p>{{ expression }}</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="row">
-              <div class="col">
-                  <a class="btn btn-primary" href="/expression">Новое выражение</a>
-                  <a class="btn btn-primary" href="/exphistory">История выражений</a>
+    <div class="row">
+      <div class="col mb-2">
+          <div class="card">
+              <div class="card-body">
+                  <p>{{ expression }}</p>
               </div>
           </div>
       </div>
-    </main>
-</body>
-</html>
+    </div>
+
+    <div class="row">
+      <div class="col">
+          <a class="btn btn-primary" href="/expression">Новое выражение</a>
+          <a class="btn btn-primary" href="/exphistory">История выражений</a>
+      </div>
+    </div>
+{% endblock %}

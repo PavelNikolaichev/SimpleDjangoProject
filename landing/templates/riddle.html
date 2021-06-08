@@ -1,37 +1,18 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Загадка</title>
-    <style>
-        main > .container {
-            padding: 60px 15px 0;
-        }
-    </style>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-</head>
-<body class="d-flex flex-column h-100">
-    {% include 'menu.html' %}
-    <main class="flex-shrink-0">
-        <div class="container">
-            <div class="row">
-                <div class="col mb-2">
-                    <h1 class="mt-5">Загадка от Жака Фреско</h1>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col mb-2">
-                    <p>На размышление даётся 10 секунд</p>
-                    <p>Дано 10 коз, сколько весит собака?</p>
-                    <p>Время пошло</p>
-                    <img src="https://bit.ly/3oxtkO6">
-                    <a href="/answer">Ответ</a>
-                </div>
-            </div>
-
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col mb-2">
+            <h1 class="mt-5">Загадка от Жака Фреско</h1>
         </div>
-    </main>
-</body>
-</html>
+    </div>
+
+    <div class="row">
+        <div class="col mb-2">
+            <p>На размышление даётся 10 секунд</p>
+            <p>Дано 10 коз, сколько весит собака?</p>
+            <p>Время пошло</p>
+            <img src="https://bit.ly/3oxtkO6">
+            <a href="/answer">Ответ</a>
+        </div>
+    </div>
+{% endblock %}

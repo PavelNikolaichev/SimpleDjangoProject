@@ -1,52 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Какулятор</title>
-    <style>
-        main > .container {
-            padding: 60px 15px 0;
-        }
-    </style>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+      <div class="col mb-2">
+          <h1 class="mt-5">Какулятор</h1>
+      </div>
+    </div>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-</head>
-<body class="d-flex flex-column h-100">
-    {% include 'menu.html' %}
-    <main class="flex-shrink-0">
-        <div class="container">
-            <div class="row">
-              <div class="col mb-2">
-                  <h1 class="mt-5">Какулятор</h1>
-              </div>
-            </div>
-
-            <div class="row">
-                <div class="col mb-2">
-                    <h3>Введите данные:</h3>
-                    <form method="post" action="/calculator/">
-                        {% csrf_token %}
-                        {{ form.first.label }}: {{ form.first }}<br>
-                        {{ form.second.label }}: {{ form.second }}<br>
-                        <input type="submit" value="Вычислить">
-                    </form>
-                    {% if error %}
-                        <p>Некорректные данные в форме</p>
-                        <p>Подробности:</p>
-                        {{ form.errors }}
-                    {% endif %}
-                    {% if has_data %}
-                        <ul>
-                            <li>A = {{ a }}</li>
-                            <li>B = {{ b }}</li>
-                            <li>Сумма равна: {{ c }}</li>
-                        </ul>
-                    {% else %}
-                        <p>Значение для сложения не задано</p>
-                    {% endif %}
-                </div>
-            </div>
+    <div class="row">
+        <div class="col mb-2">
+            <h3>Введите данные:</h3>
+            <form method="post" action="/calculator/">
+                {% csrf_token %}
+                {{ form.first.label }}: {{ form.first }}<br>
+                {{ form.second.label }}: {{ form.second }}<br>
+                <input type="submit" value="Вычислить">
+            </form>
+            {% if error %}
+                <p>Некорректные данные в форме</p>
+                <p>Подробности:</p>
+                {{ form.errors }}
+            {% endif %}
+            {% if has_data %}
+                <ul>
+                    <li>A = {{ a }}</li>
+                    <li>B = {{ b }}</li>
+                    <li>Сумма равна: {{ c }}</li>
+                </ul>
+            {% else %}
+                <p>Значение для сложения не задано</p>
+            {% endif %}
         </div>
-    </main>
-</body>
-</html>
+    </div>
+{% endblock %}
