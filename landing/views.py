@@ -27,6 +27,7 @@ def get_menu_context():
 
 def index(request):
     """
+    View для рендера главной страницы сайта
     :param request: запрос
     :return: выдает главную страницу
     """
@@ -36,6 +37,7 @@ def index(request):
 
 def riddle(request):
     """
+    View для рендера страницы с загадкой
     :param request: запрос
     :return:  выдает страницу с загадкой
     """
@@ -45,6 +47,7 @@ def riddle(request):
 
 def answer(request):
     """
+    View для рендера страницы с ответом на загадку
     :param request: запрос
     :return: выдает страницу с ответом на загадку
     """
@@ -54,12 +57,13 @@ def answer(request):
 
 def multiply(request):
     """
+    View для рендера страницы с таблицей умножения числа number от 1 до 10
     :param request: запрос, должен включать в себя число для вывода таблицы.
     :return:  выдает страницу с таблицей, если данных нет выдает ошибку
     """
     number = request.GET.get('value', None)
     context = {}
-    if (number is None):
+    if number is None:
         context['has_data'] = False
     else:
         number = int(number)
@@ -74,6 +78,7 @@ def multiply(request):
 
 def expression(request):
     """
+    View для рендера страницы со случайно сгенерированным выражением и сохранением его в БД
     :param request: запрос
     :return: выдает страницу с выражением
     """
@@ -106,6 +111,7 @@ def expression(request):
 
 def calculator(request):
     """
+    View для рендера страницы с калькулятором суммы
     :param request: запрос, для подсчёта суммы должны быть 2 числа(a, b)
     :return: страница с калькулятором
     """
@@ -135,6 +141,7 @@ def calculator(request):
 
 def exp_history(request):
     """
+    View для рендера страциы с историей выражений
     :param request: запрос
     :return: выдает страницу с историей выражений
     """
@@ -220,7 +227,7 @@ def Clicker(request):
         form = StudentForm(request.POST)
         if form.is_valid():
             record = Student(
-                HP=form.data['HP'] ,
+                HP=form.data['HP'],
                 IQ=form.data['IQ'],
                 FUN=form.data['FUN']
             )

@@ -11,9 +11,9 @@
             <h3>Введите данные:</h3>
             <form method="post" action="/calculator/">
                 {% csrf_token %}
-                {{ form.first.label }}: {{ form.first }}<br>
-                {{ form.second.label }}: {{ form.second }}<br>
-                <input type="submit" value="Вычислить">
+                {{ form.first.label }}: {{ form.first }}
+                {{ form.second.label }}: {{ form.second }}
+                <input type="submit" class="btn btn-primary mt-2 mb-2" value="Вычислить">
             </form>
             {% if error %}
                 <p>Некорректные данные в форме</p>
@@ -24,7 +24,7 @@
                 <ul>
                     <li>A = {{ a }}</li>
                     <li>B = {{ b }}</li>
-                    <li>Сумма равна: {{ c }}</li>
+                    <li>Сумма: {{ c }}</li>
                 </ul>
             {% else %}
                 <p>Значение для сложения не задано</p>
