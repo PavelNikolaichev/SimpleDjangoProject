@@ -154,6 +154,7 @@ def exp_history(request):
 
 def str_history(request):
     """
+    View для рендера истории запросов на анализ текста
     :param request: запрос
     :return: выдает историю запросов пользователя
     """
@@ -166,6 +167,7 @@ def str_history(request):
 
 def strCount(request):
     """
+    View для рендера анализа текста
     :param request: запрос, для анализа текста должен включать текст(Text)
     :return: выдает страницу с аналилзом текста
     """
@@ -218,11 +220,13 @@ def strCount(request):
 
 def Clicker(request):
     """
+    View для игры на JS - симулятор студента
     :param request: запрос, для сохранения на сервер должен включать
     :return: выдает страницу с игрой
     """
     context = {}
 
+    # TODO: Loading from DB
     if request.method == 'POST':
         form = StudentForm(request.POST)
         if form.is_valid():

@@ -6,6 +6,7 @@ from django.utils import timezone
 
 class ExpressionHistory(models.Model):
     """
+    Модель для истории сгенерированных выражений
     :param expression: выражение
     """
     expression = models.CharField(max_length=255)
@@ -13,6 +14,7 @@ class ExpressionHistory(models.Model):
 
 class StrHistory(models.Model):
     """
+    Модель для истории запросов на анализ текста
     :param Date: дата создания записи
     :param Text: текст для анализа
     :param Words: кол-во слов
@@ -28,6 +30,7 @@ class StrHistory(models.Model):
 
 class Student(models.Model):
     """
+    Модель для сохранения данных в игре на JS
     :param Date: дата создания записи
     :param HP: кол-во очков здоровья
     :param IQ: кол-во очков интеллекта
