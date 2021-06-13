@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% extends './components/base.html' %}
+{% load static %}
 {% block content %}
     <div class="row">
         <div class="col mb-2">
@@ -11,7 +12,7 @@
             <p>На размышление даётся 10 секунд</p>
             <p>Дано 10 коз, сколько весит собака?</p>
             <p>Время пошло</p>
-            <img src="https://bit.ly/3oxtkO6">
+            <img src="{% static "img/Time'sUp.jpg" %}">
             <a href="/answer">Ответ</a>
         </div>
     </div>

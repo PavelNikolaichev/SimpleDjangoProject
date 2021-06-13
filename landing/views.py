@@ -2,9 +2,11 @@ from django.shortcuts import render
 from random import randint
 
 from django.utils import timezone
+from django.views import View
+from django.views.generic import ListView, TemplateView
 
-from landing.models import ExpressionHistory, StrHistory, Student
-from landing.forms import CalcForm, StrForm, StudentForm
+from .models import ExpressionHistory, StrHistory, Student
+from .forms import CalcForm, StrForm, StudentForm
 
 
 def get_menu_context():
@@ -25,144 +27,189 @@ def get_menu_context():
     ]
 
 
-def index(request):
+class IndexView(TemplateView):
     """
-    View для рендера главной страницы сайта
-    :param request: запрос
-    :return: выдает главную страницу
+    View-class для рендера главной страницы сайта
     """
-    context = {'menu': get_menu_context()}
-    return render(request, 'index.html', context)
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = get_menu_context()
+        context['title'] = 'Главная'
+        return context
 
 
-def riddle(request):
+class RiddleView(TemplateView):
     """
-    View для рендера страницы с загадкой
-    :param request: запрос
-    :return:  выдает страницу с загадкой
+    View-class для рендера страницы с загадкой
     """
-    context = {'menu': get_menu_context()}
-    return render(request, 'riddle.html', context)
+    template_name = 'riddle.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = get_menu_context()
+        context['title'] = 'Загадка'
+        return context
 
 
-def answer(request):
+class AnswerView(TemplateView):
     """
-    View для рендера страницы с ответом на загадку
-    :param request: запрос
-    :return: выдает страницу с ответом на загадку
+    View-class для рендера страницы с ответом на загадку
     """
-    context = {'menu': get_menu_context()}
-    return render(request, 'answer.html', context)
+    template_name = 'answer.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = get_menu_context()
+        context['title'] = 'Ответ на загадку'
+        return context
 
 
-def multiply(request):
+class MultiplyView(TemplateView):
     """
-    View для рендера страницы с таблицей умножения числа number от 1 до 10
-    :param request: запрос, должен включать в себя число для вывода таблицы.
-    :return:  выдает страницу с таблицей, если данных нет выдает ошибку
+    View-class для рендера страницы с таблицей умножения числа number от 1 до 10
     """
-    number = request.GET.get('value', None)
-    context = {}
-    if number is None:
-        context['has_data'] = False
-    else:
-        number = int(number)
-        context['has_data'] = True
-        table = list()
-        for i in range(1, 11):
-            table.append(str(i) + ' * ' + str(number) + ' = ' + str(number * i))
-        context.update({'table': table})
-    context['menu'] = get_menu_context()
-    return render(request, 'multiply.html', context)
+    template_name = 'multiply.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = get_menu_context()
+        number = self.request.GET.get('value', None)
 
-def expression(request):
-    """
-    View для рендера страницы со случайно сгенерированным выражением и сохранением его в БД
-    :param request: запрос
-    :return: выдает страницу с выражением
-    """
-    nums = list()
-    answer = 0
-    expr = ''
-
-    for i in range(randint(2, 4)):
-        nums.append(randint(10, 100))
-        if randint(0, 1) == 1:
-            expr += '-' + str(nums[i]) + ' '
-            answer -= nums[i]
+        if number is None or not str(number).isnumeric():
+            context.update({'has_data': False})
         else:
-            if i == 0:
-                expr += str(nums[i]) + ' '
+            context.update({'has_data': True})
+            table = list()
+
+            for i in range(1, 11):
+                table.append(str(i) + ' * ' + str(number) + ' = ' + str(number * i))
+
+            context.update({'table': table, 'title': 'Умножение'})
+
+        return context
+
+
+class ExpressionView(TemplateView):
+    """
+    View-class для рендера страницы со случайно сгенерированным выражением и сохранением его в БД
+    """
+    template_name = 'expression.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        answer = 0
+        expr = ''
+
+        for i in range(randint(2, 4)):
+            num = randint(-100, 100)
+            if num < 0:
+                expr += '-' + str(num) + ' '
+                answer -= num
             else:
-                expr += '+ ' + str(nums[i]) + ' '
-                answer += nums[i]
-    expr += '= ' + str(answer)
+                if i == 0:
+                    expr += str(num) + ' '
+                else:
+                    expr += '+ ' + str(num) + ' '
+                    answer += num
+        expr += '= ' + str(answer)
 
-    record = ExpressionHistory(expression=expr)
-    record.save()
-    context = {
-        'expression': expr,
-        'expression_ans': answer,
-        'menu': get_menu_context()
-    }
-    return render(request, 'expression.html', context)
+        record = ExpressionHistory(expression=expr)
+        record.save()
+        context.update({
+            'expression': expr,
+            'expression_ans': answer,
+            'menu': get_menu_context()
+        })
+        return context
 
 
-def calculator(request):
+class CalculatorView(View):
     """
-    View для рендера страницы с калькулятором суммы
-    :param request: запрос, для подсчёта суммы должны быть 2 числа(a, b)
-    :return: страница с калькулятором
+    View-class для рендера страницы с калькулятором суммы
     """
-    context = {}
+    def get(self, request):
+        """
+        Функция, которая обрабатывается при получении GET-запроса
+        :param request: Запрос
+        :return: Рендер веб-страницы
+        """
+        context = {
+            'menu': get_menu_context(),
+            'has_data': False,
+            'form': CalcForm()
+        }
+        return render(self.request, 'calculator.html', context)
 
-    if request.method == 'POST':
-        form = CalcForm(request.POST)
+    def post(self, request, *args, **kwargs):
+        """
+        Функция, которая обрабатывается при получении POST-запроса
+        :param request: Запрос
+        :return: Рендер веб-страницы
+        """
+        context = {'menu': get_menu_context()}
+        form = CalcForm(self.request.POST)
+
         if form.is_valid():
             a = form.data['first']
             b = form.data['second']
+
             context.update({
                 'a': a,
                 'b': b,
-                'c': int(a) + int(b)
+                'c': int(a) + int(b),
+                'has_data': True
             })
-            context['has_data'] = True
         else:
             context['error'] = True
+
         context['form'] = form
-
-    elif request.method == 'GET':
-        context['has_data'] = False
-        context['form'] = CalcForm()
-    context['menu'] = get_menu_context()
-    return render(request, 'calculator.html', context)
+        return render(self.request, 'calculator.html', context)
 
 
-def exp_history(request):
+class ExpressionHistoryView(ListView):
     """
-    View для рендера страциы с историей выражений
-    :param request: запрос
-    :return: выдает страницу с историей выражений
+        View-class для страциы с историей выражений на основе модели ExpressionHistory
     """
-    context = {
-        'history': ExpressionHistory.objects.all(),
-        'menu': get_menu_context()
-    }
-    return render(request, 'exphistory.html', context)
+    model = ExpressionHistory
+    template_name = 'expression_history.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: Дополнительные аргументы
+        :return: Контекст
+        """
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'menu': get_menu_context(),
+            'title': 'История выражений'
+        })
+        return context
 
 
-def str_history(request):
+class StrHistoryView(ListView):
     """
     View для рендера истории запросов на анализ текста
     :param request: запрос
     :return: выдает историю запросов пользователя
     """
-    context = {
-        'history': StrHistory.objects.filter(Author=request.user),
-        'menu': get_menu_context()
-    }
-    return render(request, 'str_history.html', context)
+    model = StrHistory
+    template_name = 'str_history.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: дополнительные аргументы
+        :return: контекст
+        """
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'menu': get_menu_context(),
+            'title': 'История запросов'
+        })
+        return context
 
 
 def strCount(request):
@@ -215,7 +262,7 @@ def strCount(request):
         context['has_data'] = False
         context['form'] = StrForm()
     context['menu'] = get_menu_context()
-    return render(request, 'str2words.html', context)
+    return render(request, 'landing/templates/str2words.html', context)
 
 
 def Clicker(request):

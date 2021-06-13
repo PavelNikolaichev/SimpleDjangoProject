@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends './components/base.html' %}
 {% block content %}
     <div class="row">
       <div class="col mb-2">
@@ -13,7 +13,7 @@
                     <td>ID</td>
                     <td>Выражение</td>
                 </tr>
-                {% for record in history %}
+                {% for record in object_list %}
                     <tr>
                         <td>{{ record.id }}</td>
                         <td>{{ record.expression }}</td>

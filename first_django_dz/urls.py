@@ -21,16 +21,18 @@ from landing.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index),
-    path('riddle/', riddle),
-    path('answer/', answer),
-    path('multiply/', multiply),
-    path('expression/', expression),
-    path('calculator/', calculator),
-    path('exphistory/', exp_history),
-    path('login/', views.LoginView.as_view()),
-    path('logout/', views.LogoutView.as_view()),
+    path('', IndexView.as_view()),
+
+    path('riddle/', RiddleView.as_view()),
+    path('answer/', AnswerView.as_view()),
+    path('multiply/', MultiplyView.as_view()),
+    path('expression/', ExpressionView.as_view()),
+    path('calculator/', CalculatorView.as_view()),
+    path('exphistory/', ExpressionHistoryView.as_view()),
     path('str2words/', strCount),
-    path('str_history/', str_history),
-    path('clicker/', Clicker)
+    path('str_history/', StrHistoryView.as_view()),
+    path('clicker/', Clicker),
+
+    path('login/', views.LoginView.as_view()),
+    path('logout/', views.LogoutView.as_view())
 ]
