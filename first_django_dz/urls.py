@@ -29,9 +29,9 @@ urlpatterns = [
     path('expression/', ExpressionView.as_view()),
     path('calculator/', CalculatorView.as_view()),
     path('exphistory/', ExpressionHistoryView.as_view()),
-    path('str2words/', strCount),
+    path('str2words/', StrCountView.as_view()),
     path('str_history/', StrHistoryView.as_view()),
-    path('clicker/', Clicker),
+    path('clicker/', ClickerView.as_view()),
 
     path('login/', views.LoginView.as_view()),
     path('logout/', views.LogoutView.as_view())

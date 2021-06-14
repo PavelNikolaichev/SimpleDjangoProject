@@ -34,6 +34,11 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: Дополнительные аргументы
+        :return: Контекст
+        """
         context = super().get_context_data(**kwargs)
         context['menu'] = get_menu_context()
         context['title'] = 'Главная'
@@ -47,6 +52,11 @@ class RiddleView(TemplateView):
     template_name = 'riddle.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: Дополнительные аргументы
+        :return: Контекст
+        """
         context = super().get_context_data(**kwargs)
         context['menu'] = get_menu_context()
         context['title'] = 'Загадка'
@@ -60,6 +70,11 @@ class AnswerView(TemplateView):
     template_name = 'answer.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: Дополнительные аргументы
+        :return: Контекст
+        """
         context = super().get_context_data(**kwargs)
         context['menu'] = get_menu_context()
         context['title'] = 'Ответ на загадку'
@@ -73,6 +88,11 @@ class MultiplyView(TemplateView):
     template_name = 'multiply.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: Дополнительные аргументы
+        :return: Контекст
+        """
         context = super().get_context_data(**kwargs)
         context['menu'] = get_menu_context()
         number = self.request.GET.get('value', None)
@@ -98,21 +118,26 @@ class ExpressionView(TemplateView):
     template_name = 'expression.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Получение контекста страницы
+        :param kwargs: Дополнительные аргументы
+        :return: Контекст
+        """
         context = super().get_context_data(**kwargs)
         answer = 0
         expr = ''
 
+        # TODO: Implement better algorithm
         for i in range(randint(2, 4)):
             num = randint(-100, 100)
             if num < 0:
-                expr += '-' + str(num) + ' '
-                answer -= num
+                expr += str(num) + ' '
             else:
                 if i == 0:
                     expr += str(num) + ' '
                 else:
                     expr += '+ ' + str(num) + ' '
-                    answer += num
+            answer += num
         expr += '= ' + str(answer)
 
         record = ExpressionHistory(expression=expr)
@@ -120,7 +145,8 @@ class ExpressionView(TemplateView):
         context.update({
             'expression': expr,
             'expression_ans': answer,
-            'menu': get_menu_context()
+            'menu': get_menu_context(),
+            'title': 'История выражений'
         })
         return context
 
@@ -132,23 +158,25 @@ class CalculatorView(View):
     def get(self, request):
         """
         Функция, которая обрабатывается при получении GET-запроса
-        :param request: Запрос
         :return: Рендер веб-страницы
         """
         context = {
             'menu': get_menu_context(),
             'has_data': False,
-            'form': CalcForm()
+            'form': CalcForm(),
+            'title': 'Калькулятор'
         }
         return render(self.request, 'calculator.html', context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """
         Функция, которая обрабатывается при получении POST-запроса
-        :param request: Запрос
         :return: Рендер веб-страницы
         """
-        context = {'menu': get_menu_context()}
+        context = {
+            'menu': get_menu_context(),
+            'title': 'Калькулятор'
+        }
         form = CalcForm(self.request.POST)
 
         if form.is_valid():
@@ -191,9 +219,7 @@ class ExpressionHistoryView(ListView):
 
 class StrHistoryView(ListView):
     """
-    View для рендера истории запросов на анализ текста
-    :param request: запрос
-    :return: выдает историю запросов пользователя
+    View-class для рендера истории запросов на анализ текста
     """
     model = StrHistory
     template_name = 'str_history.html'
@@ -212,15 +238,12 @@ class StrHistoryView(ListView):
         return context
 
 
-def strCount(request):
+class StrCountView(View):
     """
-    View для рендера анализа текста
-    :param request: запрос, для анализа текста должен включать текст(Text)
-    :return: выдает страницу с аналилзом текста
+    View-class для рендера анализа текста
     """
-    context = {}
-    if request.method == 'POST':
-        form = StrForm(request.POST)
+    def post(self, request):
+        form = StrForm(self.request.POST)
         if form.is_valid():
             string = str(form.data['Text'])
             words = list()
@@ -242,40 +265,64 @@ def strCount(request):
                 Text=string,
                 Words=words_count,
                 Nums=nums_count,
-                Author=request.user
+                Author=self.request.user
             )
             record.save()
 
-            context.update({
+            context = {
                 'string': string,
                 'words': words_count,
                 'numbers': nums_count,
                 'unique_words': sorted(words),
-                'unique_nums': sorted(nums)
-            })
-            context['has_data'] = True
+                'unique_nums': sorted(nums),
+                'has_data': True,
+                'title': 'Анализ текста'
+            }
         else:
-            context['error'] = True
-        context['form'] = form
+            context = {'error': True}
+        context.update({
+            'form': form,
+            'title': 'Анализ текста',
+            'menu': get_menu_context()
+        })
+        return render(self.request, 'str2words.html', context)
 
-    elif request.method == 'GET':
-        context['has_data'] = False
-        context['form'] = StrForm()
-    context['menu'] = get_menu_context()
-    return render(request, 'landing/templates/str2words.html', context)
+    def get(self, request):
+        context = {
+            'menu': get_menu_context(),
+            'title': 'Анализ текста',
+            'has_data': False,
+            'form': StrForm(),
+        }
+        return render(self.request, 'str2words.html', context)
 
 
-def Clicker(request):
+class ClickerView(View):
     """
-    View для игры на JS - симулятор студента
-    :param request: запрос, для сохранения на сервер должен включать
-    :return: выдает страницу с игрой
+    View-class для игры на JS - симулятор студента
     """
-    context = {}
-
     # TODO: Loading from DB
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
+
+    def get(self, request):
+        """
+        Функция, которая обрабатывается при получении GET-запроса
+        :return: Рендер веб-страницы
+        """
+        context = {
+            'form': StudentForm(),
+            'menu': get_menu_context(),
+            'title': 'Симулятор студента'
+        }
+
+        return render(self.request, 'student.html', context)
+
+    def post(self, request):
+        """
+        Функция, которая обрабатывается при получении POST-запроса
+        :return: Рендер веб-страницы
+        """
+        form = StudentForm(self.request.POST)
+        context = {'menu': get_menu_context()}
         if form.is_valid():
             record = Student(
                 HP=form.data['HP'],
@@ -285,8 +332,4 @@ def Clicker(request):
             record.save()
         context['form'] = form
 
-    elif request.method == 'GET':
-        context['form'] = StudentForm()
-
-    context['menu'] = get_menu_context()
-    return render(request, 'student.html', context)
+        return render(self.request, 'student.html', context)
